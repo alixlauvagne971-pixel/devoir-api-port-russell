@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 const session = require('express-session');
 
@@ -19,6 +20,11 @@ app.use(session({
   cookie: {
     httpOnly: true
   }
+}));
+
+app.use(cors({
+  origin: 'http://localhost:5175',
+  credentials: true
 }));
 
 // Route accueil
