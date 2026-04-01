@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,6 +20,7 @@ function Login() {
       });
 
       console.log("Réponse login :", response.data);
+      navigate("/dashboard");
     } catch (err) {
       console.error("Erreur login :", err);
       setError(err.response?.data?.message || "Erreur de connexion");
@@ -25,27 +29,36 @@ function Login() {
 
   return (
     <div>
-      <h1>Connexion</h1>
+      <h1>Rapport</h1>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div>
+          <label>E-mail</label>
+          <br />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div>
+          <label>Mot de passe</label>
+          <br />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
 
+        <br />
         <button type="submit">Se connecter</button>
       </form>
-
-      {error && <p>{error}</p>}
     </div>
   );
 }

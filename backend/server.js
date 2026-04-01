@@ -3,18 +3,13 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const app = require('./app');
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log('MongoDB connecté');
-    console.log('Base active :', mongoose.connection.name);
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connecté'))
+  .catch((err) => console.error('Erreur MongoDB :', err));
 
-    const collections = await mongoose.connection.db.listCollections().toArray();
-    console.log('Collections :', collections.map(c => c.name));
+const PORT = process.env.PORT || 3000;
 
-    const PORT = process.env.PORT || 3000;
-
-    app.listen(PORT, () => {
-      console.log(`Serveur lancé sur le port ${PORT}`);
-    });
-  })
-  .catch(err => console.log('Erreur MongoDB :', err));
+app.listen(PORT, () => {
+  console.log(`Serveur lancé sur le port ${PORT}`);
+});

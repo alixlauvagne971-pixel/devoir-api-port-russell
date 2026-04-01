@@ -1,5 +1,28 @@
 const User = require('../models/User');
-const bcrypt = require('bcrypt');
+const generateToken = require('../utils/generateToken');
+
+function sendTokenResponse(user, res) {
+  const token = generateToken(user._id);
+
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'None' : 'Lax',
+    maxAge: 24 * 60 * 60 * 1000, // 1 jour
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Connexion réussie',
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    },
+  });
+}
 
 exports.login = async (req, res) => {
   try {
@@ -7,53 +30,71 @@ exports.login = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        message: 'Email et mot de passe obligatoires'
+        success: false,
+        message: 'Email et mot de passe requis',
       });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
 
     if (!user) {
       return res.status(401).json({
-        message: 'Email ou mot de passe incorrect'
+        success: false,
+        message: 'Identifiants invalides',
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
       return res.status(401).json({
-        message: 'Email ou mot de passe incorrect'
+        success: false,
+        message: 'Identifiants invalides',
       });
     }
 
-    req.session.user = {
-      email: user.email,
-      username: user.username
-    };
-
-    res.status(200).json({
-      message: 'Connexion réussie',
-      user: req.session.user
-    });
+    sendTokenResponse(user, res);
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      success: false,
+      message: 'Erreur serveur lors de la connexion',
+      error: error.message,
     });
   }
 };
 
 exports.logout = (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      return res.status(500).json({
-        message: 'Erreur lors de la déconnexion'
+  res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Déconnexion réussie',
+  });
+};
+
+exports.me = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur introuvable',
       });
     }
 
-    res.clearCookie('connect.sid');
     res.status(200).json({
-      message: 'Déconnexion réussie'
+      success: true,
+      user,
     });
-  });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Erreur serveur',
+      error: error.message,
+    });
+  }
 };

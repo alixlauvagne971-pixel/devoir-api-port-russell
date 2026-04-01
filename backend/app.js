@@ -1,45 +1,39 @@
-const cors = require('cors');
 const express = require('express');
-const session = require('express-session');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
-const usersRouter = require('./routes/users');
-const authRouter = require('./routes/auth');
-const catwaysRouter = require('./routes/catways');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Session
-app.use(session({
-  secret: 'port-russell-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true
-  }
-}));
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'http://localhost:5175'],
+    credentials: true,
+  })
+);
 
-app.use(cors({
-  origin: 'http://localhost:5175',
-  credentials: true
-}));
-
-// Route accueil
+// Routes
 app.get('/', (req, res) => {
-  res.send('API Port Russell fonctionne 🚤');
+  res.json({
+    success: true,
+    message: 'API Port Russell fonctionne',
+  });
 });
 
-// Routes API
-app.use('/users', usersRouter);
-app.use('/catways', catwaysRouter);
-app.use('/', authRouter);
+app.use('/api', authRoutes);
 
 // 404
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route introuvable' });
+  res.status(404).json({
+    success: false,
+    message: 'Route introuvable',
+  });
 });
 
 module.exports = app;
