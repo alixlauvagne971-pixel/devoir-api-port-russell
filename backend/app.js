@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const catwaysRoutes = require('./routes/catways');
+const reservationsRoutes = require("./routes/reservations");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
 app.use('/api', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/catways', catwaysRoutes);
+app.use("/api/reservations", reservationsRoutes);
 
 // 404
 app.use((req, res) => {

@@ -58,6 +58,24 @@ exports.getReservationById = async (req, res) => {
   }
 };
 
+exports.getAllReservations = async (req, res) => {
+  try {
+    const reservations = await Reservation.find().sort({ startDate: 1 });
+
+    res.status(200).json({
+      success: true,
+      count: reservations.length,
+      reservations,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur",
+      error: error.message,
+    });
+  }
+};
+
 exports.createReservation = async (req, res) => {
   try {
     const catwayNumber = Number(req.params.id);
