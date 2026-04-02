@@ -3,12 +3,15 @@ import api from "../api";
 import NavBar from "../composent/navBar";
 import ReservationModal from "../composent/ReservationModal";
 import DeleteReservationButton from "../composent/btnDelete";
+import EditModal from "../composent/editModal";
+import pencilIcon from "../assets/img/icones/pencil-fill.svg";
 
 
 function Reservations() {
   const [reservations, setReservations] = useState([]);
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState(null);
   const fetchReservations = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -38,6 +41,10 @@ function Reservations() {
   setReservations((prev) =>
     Array.isArray(prev) ? prev.filter((item) => item._id !== id) : []
   );
+};
+
+const handleEditClick = (reservation) => {
+  setSelectedReservation(reservation);
 };
 
   useEffect(() => {
@@ -111,12 +118,24 @@ function Reservations() {
                       <td>{r.boatName}</td>
                       <td>{new Date(r.startDate).toLocaleDateString()}</td>
                       <td>{new Date(r.endDate).toLocaleDateString()}</td>
-                        <td>
-                          <DeleteReservationButton
-                            reservation={r}
-                            onDeleteSuccess={handleDeleteSuccess}
-                          />
-                        </td>
+                      <td>
+                    <div className="d-flex align-items-center gap-2">
+                      
+                      <button
+                        className="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                        style={{ width: "35px", height: "35px" }}
+                        onClick={() => handleEditClick(r)}
+                      >
+                        <img src={pencilIcon} alt="edit" width="16" />
+                      </button>
+
+                      <DeleteReservationButton
+                        reservation={r}
+                        onDeleteSuccess={handleDeleteSuccess}
+                      />
+
+                    </div>
+                  </td>
                     </tr>
                   ))}
                 </tbody>
@@ -126,11 +145,18 @@ function Reservations() {
         </div>
       </div>
     </div>
-          <ReservationModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        onSuccess={fetchReservations}
-      />
+        <ReservationModal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onSuccess={fetchReservations}
+        />
+
+        <EditModal
+          show={selectedReservation !== null}
+          reservation={selectedReservation}
+          onClose={() => setSelectedReservation(null)}
+          onSuccess={fetchReservations}
+        />
     </>
   );
 }
