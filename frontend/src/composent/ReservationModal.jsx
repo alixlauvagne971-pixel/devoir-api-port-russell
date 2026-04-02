@@ -74,27 +74,27 @@ function ReservationModal({ show, onClose, onSuccess }) {
               onChange={handleChange}
             />
 
-<div className="row">
-  <div className="col-md-6 mb-3">
-    <label className="form-label fw-semibold">Date de début</label>
-    <input
-      type="date"
-      className="form-control rounded-3 py-2"
-      name="startDate"
-      onChange={handleChange}
-    />
-  </div>
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label fw-semibold">Date de début</label>
+                <input
+                  type="date"
+                  className="form-control rounded-3 py-2"
+                  name="startDate"
+                  onChange={handleChange}
+                />
+              </div>
 
-  <div className="col-md-6 mb-3">
-    <label className="form-label fw-semibold">Date de fin</label>
-    <input
-      type="date"
-      className="form-control rounded-3 py-2"
-      name="endDate"
-      onChange={handleChange}
-    />
-  </div>
-</div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label fw-semibold">Date de fin</label>
+                <input
+                  type="date"
+                  className="form-control rounded-3 py-2"
+                  name="endDate"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
 
           </div>
 

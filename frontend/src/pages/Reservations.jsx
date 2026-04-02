@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import NavBar from "../composent/navBar";
 import ReservationModal from "../composent/ReservationModal";
+import DeleteReservationButton from "../composent/btnDelete";
+
 
 function Reservations() {
   const [reservations, setReservations] = useState([]);
@@ -31,6 +33,12 @@ function Reservations() {
       );
     }
   };
+
+  const handleDeleteSuccess = (id) => {
+  setReservations((prev) =>
+    Array.isArray(prev) ? prev.filter((item) => item._id !== id) : []
+  );
+};
 
   useEffect(() => {
     const userFromStorage = localStorage.getItem("user");
@@ -91,6 +99,7 @@ function Reservations() {
                     <th>Bateau</th>
                     <th>Début</th>
                     <th>Fin</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
 
@@ -102,6 +111,12 @@ function Reservations() {
                       <td>{r.boatName}</td>
                       <td>{new Date(r.startDate).toLocaleDateString()}</td>
                       <td>{new Date(r.endDate).toLocaleDateString()}</td>
+                        <td>
+                          <DeleteReservationButton
+                            reservation={r}
+                            onDeleteSuccess={handleDeleteSuccess}
+                          />
+                        </td>
                     </tr>
                   ))}
                 </tbody>
