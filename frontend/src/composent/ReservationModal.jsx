@@ -39,55 +39,66 @@ function ReservationModal({ show, onClose, onSuccess }) {
   };
 
   return (
-    <div className="modal d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
-      <div className="modal-dialog">
-        <div className="modal-content">
+    <div className="modal d-block" style={{ background: "rgba(15, 23, 42, 0.45)", backdropFilter: "blur(3px)" }}>
+      <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
 
-          <div className="modal-header">
-            <h5 className="modal-title">Ajouter une réservation</h5>
-            <button className="btn-close" onClick={onClose}></button>
-          </div>
+          <div className="modal-header border-0 px-4 pt-4 pb-2">
+            <div>
+                <h4 className="modal-title fw-bold mb-1">Nouvelle réservation</h4>
+                <p className="text-muted mb-0 small">Ajoutez une réservation pour un catway</p>
+            </div>
+                <button className="btn-close" onClick={onClose}></button>
+            </div>
 
           <div className="modal-body">
 
             <input
-              className="form-control mb-2"
+              className="form-control rounded-3 py-2 mb-3"
               placeholder="Catway"
               name="catwayNumber"
               onChange={handleChange}
             />
 
             <input
-              className="form-control mb-2"
+              className="form-control rounded-3 py-2 mb-3"
               placeholder="Client"
               name="clientName"
               onChange={handleChange}
             />
 
             <input
-              className="form-control mb-2"
+              className="form-control rounded-3 py-2 mb-3"
               placeholder="Bateau"
               name="boatName"
               onChange={handleChange}
             />
 
-            <input
-              type="date"
-              className="form-control mb-2"
-              name="startDate"
-              onChange={handleChange}
-            />
+<div className="row">
+  <div className="col-md-6 mb-3">
+    <label className="form-label fw-semibold">Date de début</label>
+    <input
+      type="date"
+      className="form-control rounded-3 py-2"
+      name="startDate"
+      onChange={handleChange}
+    />
+  </div>
 
-            <input
-              type="date"
-              className="form-control"
-              name="endDate"
-              onChange={handleChange}
-            />
+  <div className="col-md-6 mb-3">
+    <label className="form-label fw-semibold">Date de fin</label>
+    <input
+      type="date"
+      className="form-control rounded-3 py-2"
+      name="endDate"
+      onChange={handleChange}
+    />
+  </div>
+</div>
 
           </div>
 
-          <div className="modal-footer">
+          <div className="modal-footer border-0 px-4 pb-4 pt-2 d-flex justify-content-center">
             <button className="btn btn-secondary" onClick={onClose}>
               Annuler
             </button>
