@@ -5,6 +5,7 @@ import ReservationModal from "../composent/ReservationModal";
 import DeleteReservationButton from "../composent/btnDelete";
 import EditModal from "../composent/editModal";
 import pencilIcon from "../assets/img/icones/pencil-fill.svg";
+import ReservDetailModal from "../composent/reservDetailModal.jsx";
 
 
 function Reservations() {
@@ -12,6 +13,8 @@ function Reservations() {
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const fetchReservations = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -45,6 +48,17 @@ function Reservations() {
 
 const handleEditClick = (reservation) => {
   setSelectedReservation(reservation);
+  setShowEditModal(true);
+};
+
+const handleViewClick = (reservation) => {
+  setSelectedReservation(reservation);
+  setShowDetailsModal(true);
+};
+
+const handleCloseDetailsModal = () => {
+  setShowDetailsModal(false);
+  setSelectedReservation(null);
 };
 
   useEffect(() => {
@@ -113,18 +127,36 @@ const handleEditClick = (reservation) => {
                 <tbody>
                   {reservations.map((r, index) => (
                     <tr key={index}>
-                      <td>{r.catwayNumber}</td>
-                      <td>{r.clientName}</td>
-                      <td>{r.boatName}</td>
-                      <td>{new Date(r.startDate).toLocaleDateString()}</td>
-                      <td>{new Date(r.endDate).toLocaleDateString()}</td>
-                      <td>
+                      <td style={{ cursor: "pointer" }} onClick={() => handleViewClick(r)}>
+                        {r.catwayNumber}
+                      </td>
+
+                      <td style={{ cursor: "pointer" }} onClick={() => handleViewClick(r)}>
+                        {r.clientName}
+                      </td>
+
+                      <td style={{ cursor: "pointer" }} onClick={() => handleViewClick(r)}>
+                        {r.boatName}
+                      </td>
+
+                      <td style={{ cursor: "pointer" }} onClick={() => handleViewClick(r)}>
+                        {new Date(r.startDate).toLocaleDateString()}
+                      </td>
+
+                      <td style={{ cursor: "pointer" }} onClick={() => handleViewClick(r)}>
+                        {new Date(r.endDate).toLocaleDateString()}
+                      </td>
+
+                      <td className="action-cell">
                     <div className="d-flex align-items-center gap-2">
                       
                       <button
                         className="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
                         style={{ width: "35px", height: "35px" }}
-                        onClick={() => handleEditClick(r)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(r);
+                        }}
                       >
                         <img src={pencilIcon} alt="edit" width="16" />
                       </button>
@@ -152,11 +184,20 @@ const handleEditClick = (reservation) => {
         />
 
         <EditModal
-          show={selectedReservation !== null}
+          show={showEditModal}
           reservation={selectedReservation}
-          onClose={() => setSelectedReservation(null)}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedReservation(null);
+          }}
           onSuccess={fetchReservations}
         />
+
+        <ReservDetailModal
+  show={showDetailsModal}
+  onHide={handleCloseDetailsModal}
+  reservation={selectedReservation}
+/>
     </>
   );
 }

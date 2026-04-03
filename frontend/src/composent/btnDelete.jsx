@@ -37,12 +37,18 @@ function DeleteReservationButton({ reservation, onDeleteSuccess }) {
   return (
     <>
       <img
-        src={trashIcon}
-        alt="Supprimer"
-        onClick={() => setShowModal(true)}
+          src={trashIcon}
+          alt="Supprimer"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowModal(true);
+          }}
       />
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered backdrop="static"dialogClassName="rounded-4">
+      <Modal show={showModal} onHide={(e) => {
+  if (e?.stopPropagation) e.stopPropagation();
+  setShowModal(false);
+}} centered backdrop="static"dialogClassName="rounded-4">
         <Modal.Header closeButton className="border-0 pb-0">
             <Modal.Title className="fw-bold fs-3 text-dark">
                 Supprimer la réservation
@@ -78,13 +84,16 @@ function DeleteReservationButton({ reservation, onDeleteSuccess }) {
 
         <Modal.Footer className="border-0 pt-0 d-flex justify-content-center">
           <Button
-            variant="danger"
-            onClick={handleDeleteReservation}
-            disabled={isDeleting}
-            className="rounded-3 px-4 fw-semibold shadow-sm d-flex justify-content-center"
-          >
-            {isDeleting ? "Suppression..." : "Supprimer"}
-          </Button>
+                  variant="danger"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteReservation();
+                  }}
+                  disabled={isDeleting}
+                  className="rounded-3 px-4 fw-semibold shadow-sm d-flex justify-content-center"
+                >
+                  {isDeleting ? "Suppression..." : "Supprimer"}
+                </Button>
         </Modal.Footer>
       </Modal>
     </>

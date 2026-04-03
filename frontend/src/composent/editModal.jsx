@@ -66,10 +66,10 @@ function EditModal({ show, onClose, reservation, onSuccess }) {
 
   return (
     <div
-  className="modal d-block modal-backdrop-blur"
-  tabIndex="-1"
-  style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
->
+      className="modal d-block modal-backdrop-blur"
+      tabIndex="-1"
+      style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
           <div className="modal-header border-0 px-4 pt-4 pb-3">
@@ -133,7 +133,7 @@ function EditModal({ show, onClose, reservation, onSuccess }) {
             </div>
 
             <div className="modal-footer border-0 px-4 pb-4 pt-2 d-flex justify-content-end gap-2">
-              <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold">
+              <button type="submit" className="btn btn-primary">
                 Enregistrer
               </button>
             </div>
