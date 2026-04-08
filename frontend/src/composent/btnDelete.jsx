@@ -3,7 +3,9 @@ import api from "../api";
 import { Modal, Button } from "react-bootstrap";
 import trashIcon from "../assets/img/icones/trash3-fill.svg";
 
+
 function DeleteReservationButton({ reservation, onDeleteSuccess }) {
+  const [deleteError, setDeleteError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -25,12 +27,20 @@ function DeleteReservationButton({ reservation, onDeleteSuccess }) {
     onDeleteSuccess(reservation._id);
     setShowModal(false);
   } catch (error) {
-    console.error("Erreur suppression réservation :", error);
-    console.error("Réponse backend :", error.response?.data);
-    console.error("Status :", error.response?.status);
-    alert("Impossible de supprimer la réservation.");
-  } finally {
-    setIsDeleting(false);
+  console.error("Erreur suppression réservation :", error);
+
+  const status = error?.response?.status;
+  const messageBackend = error?.response?.data?.message;
+
+  if (status === 404) {
+    setDeleteError(messageBackend || "Réservation introuvable.");
+  } else if (status === 401) {
+    setDeleteError("Session expirée ou accès non autorisé.");
+  } else if (status === 500) {
+    setDeleteError("Erreur serveur lors de la suppression.");
+  } else {
+    setDeleteError(messageBackend || "Impossible de supprimer la réservation.");
+    }
   }
 };
 
@@ -41,14 +51,16 @@ function DeleteReservationButton({ reservation, onDeleteSuccess }) {
           alt="Supprimer"
           onClick={(e) => {
             e.stopPropagation();
+            setDeleteError("");
             setShowModal(true);
           }}
       />
 
       <Modal show={showModal} onHide={(e) => {
-  if (e?.stopPropagation) e.stopPropagation();
-  setShowModal(false);
-}} centered backdrop="static"dialogClassName="rounded-4">
+        if (e?.stopPropagation) e.stopPropagation();
+        setDeleteError("");
+        setShowModal(false);
+      }} centered backdrop="static"dialogClassName="rounded-4">
         <Modal.Header closeButton className="border-0 pb-0">
             <Modal.Title className="fw-bold fs-3 text-dark">
                 Supprimer la réservation
@@ -80,6 +92,13 @@ function DeleteReservationButton({ reservation, onDeleteSuccess }) {
         <div className="alert alert-danger rounded-4 py-2 mb-0">
             Cette action est définitive.
         </div>
+
+        {deleteError && (
+          <div className="alert alert-danger rounded-4 py-2 mb-3">
+            {deleteError}
+          </div>
+        )}
+        
         </Modal.Body>
 
         <Modal.Footer className="border-0 pt-0 d-flex justify-content-center">
