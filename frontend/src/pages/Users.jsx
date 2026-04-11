@@ -3,16 +3,18 @@ import NavBar from "../composent/navBar";
 import api from "../api";
 import AddUserModal from "../composent/addUserModal";
 import EditUserModal from "../composent/editUserModal";
+import DeleteUserModal from "../composent/deleteUserModal";
 
 function Users() {
-  const [users, setUsers] = useState([]);
-  const [user, setUser] = useState(null);
-  const [today, setToday] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [user, setUser] = useState(null);
+    const [today, setToday] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -50,6 +52,11 @@ function Users() {
     const openEditModal = (user) => {
     setSelectedUser(user);
     setShowEditModal(true);
+    };
+
+    const openDeleteModal = (user) => {
+    setSelectedUser(user);
+    setShowDeleteModal(true);
     };
 
   return (
@@ -127,14 +134,15 @@ function Users() {
                                 <button
                                     className="btn btn-sm btn-outline-warning"
                                     onClick={() => openEditModal(u)}
-                                    >
+                                >
                                     Modifier
                                 </button>
 
                                 <button
-                                className="btn btn-sm btn-outline-danger"
+                                    className="btn btn-sm btn-outline-danger"
+                                    onClick={() => openDeleteModal(u)}
                                 >
-                                Supprimer
+                                    Supprimer
                                 </button>
                             </div>
                             </td>
@@ -161,6 +169,16 @@ function Users() {
             user={selectedUser}
             onSuccess={fetchUsers}
         />
+
+        <DeleteUserModal
+            show={showDeleteModal}
+            onClose={() => {
+                setShowDeleteModal(false);
+                setSelectedUser(null);
+            }}
+            user={selectedUser}
+            onSuccess={fetchUsers}
+            />
     </>
   );
 }
