@@ -4,6 +4,7 @@ import api from "../api";
 import AddUserModal from "../composent/addUserModal";
 import EditUserModal from "../composent/editUserModal";
 import DeleteUserModal from "../composent/deleteUserModal";
+import ViewUserModal from "../composent/viewUserModal";
 
 function Users() {
     const [users, setUsers] = useState([]);
@@ -15,6 +16,8 @@ function Users() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [selectedViewUser, setSelectedViewUser] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -50,13 +53,18 @@ function Users() {
   };
 
     const openEditModal = (user) => {
-    setSelectedUser(user);
-    setShowEditModal(true);
+        setSelectedUser(user);
+        setShowEditModal(true);
     };
 
     const openDeleteModal = (user) => {
-    setSelectedUser(user);
-    setShowDeleteModal(true);
+        setSelectedUser(user);
+        setShowDeleteModal(true);
+    };
+
+    const openViewModal = (user) => {
+        setSelectedViewUser(user);
+        setShowViewModal(true);
     };
 
   return (
@@ -125,22 +133,32 @@ function Users() {
 
                     <tbody>
                         {users.map((u, index) => (
-                        <tr key={u.email || index}>
-                            <td style={{ cursor: "pointer" }}>{u.username}</td>
-                            <td style={{ cursor: "pointer" }}>{u.email}</td>
+                        <tr
+                            key={u.email || index}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => openViewModal(u)}
+                        >
+                            <td>{u.username}</td>
+                            <td>{u.email}</td>
 
                             <td className="action-cell">
                             <div className="d-flex gap-2">
                                 <button
                                     className="btn btn-sm btn-outline-warning"
-                                    onClick={() => openEditModal(u)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openEditModal(u);
+                                    }}
                                 >
                                     Modifier
                                 </button>
 
                                 <button
                                     className="btn btn-sm btn-outline-danger"
-                                    onClick={() => openDeleteModal(u)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openDeleteModal(u);
+                                    }}
                                 >
                                     Supprimer
                                 </button>
@@ -179,6 +197,15 @@ function Users() {
             user={selectedUser}
             onSuccess={fetchUsers}
             />
+
+        <ViewUserModal
+            show={showViewModal}
+            onClose={() => {
+                setShowViewModal(false);
+                setSelectedViewUser(null);
+            }}
+            user={selectedViewUser}
+        />
     </>
   );
 }

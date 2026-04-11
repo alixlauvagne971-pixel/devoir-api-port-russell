@@ -14,6 +14,7 @@ function EditUserModal({ show, onClose, user, onSuccess }) {
       setEmail(user.email);
       setPassword("");
       setError("");
+      setUserDetails(null);
     }
   }, [user]);
 
