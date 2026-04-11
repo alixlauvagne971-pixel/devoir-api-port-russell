@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Reservations from "./pages/Reservations";
 import Catways from "./pages/Catways";
+import Users from "./pages/Users";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/reservations" element={<Reservations />} />
         <Route path="/catways" element={<Catways />} />
+        <Route path="/users" element={<Users />} />
       </Routes>
     </BrowserRouter>
   );
