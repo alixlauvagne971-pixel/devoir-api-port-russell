@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import NavBar from "../composent/navBar";
 import api from "../api";
 import AddUserModal from "../composent/addUserModal";
+import EditUserModal from "../composent/editUserModal";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -10,6 +11,8 @@ function Users() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -43,6 +46,11 @@ function Users() {
       setLoading(false);
     }
   };
+
+    const openEditModal = (user) => {
+    setSelectedUser(user);
+    setShowEditModal(true);
+    };
 
   return (
     <>
@@ -115,29 +123,18 @@ function Users() {
                             <td style={{ cursor: "pointer" }}>{u.email}</td>
 
                             <td className="action-cell">
-                            <div className="d-flex align-items-center gap-2">
+                            <div className="d-flex gap-2">
                                 <button
-                                className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
-                                style={{ width: "35px", height: "35px" }}
-                                title="Voir"
-                                >
-                                <i className="bi bi-eye"></i>
+                                    className="btn btn-sm btn-outline-warning"
+                                    onClick={() => openEditModal(u)}
+                                    >
+                                    Modifier
                                 </button>
 
                                 <button
-                                className="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-                                style={{ width: "35px", height: "35px" }}
-                                title="Modifier"
+                                className="btn btn-sm btn-outline-danger"
                                 >
-                                <i className="bi bi-pencil"></i>
-                                </button>
-
-                                <button
-                                className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
-                                style={{ width: "35px", height: "35px" }}
-                                title="Supprimer"
-                                >
-                                <i className="bi bi-trash3"></i>
+                                Supprimer
                                 </button>
                             </div>
                             </td>
@@ -153,9 +150,16 @@ function Users() {
         </div>
 
         <AddUserModal
-        show={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onSuccess={fetchUsers}
+            show={showAddModal}
+            onClose={() => setShowAddModal(false)}
+            onSuccess={fetchUsers}
+        />
+
+        <EditUserModal
+            show={showEditModal}
+            onClose={() => setShowEditModal(false)}
+            user={selectedUser}
+            onSuccess={fetchUsers}
         />
     </>
   );
